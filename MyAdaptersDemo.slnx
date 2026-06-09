@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Consumer.App/Consumer.App.csproj" Id="538e6a64-ebe0-4717-b45c-38aeacf7f70e" />
+  <Project Path="Producer.Api/Producer.Api.csproj" />
+  <Project Path="Producer.Data/Producer.Data.csproj" />
+  <Project Path="Producer.Service/Producer.Service.csproj" />
+</Solution>

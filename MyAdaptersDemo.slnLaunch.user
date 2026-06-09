@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "Новый профиль",
+    "Projects": [
+      {
+        "Path": "Producer.Api\\Producer.Api.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "Consumer.App\\Consumer.App.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
