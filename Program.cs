@@ -1,22 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using Microsoft.EntityFrameworkCore;
+using Producer.Data;
+using Producer.Service;
 
-namespace Consumer.App
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<AppDbContext>();
+builder.Services.AddScoped<PersonService>();
+
+var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
 {
-    internal static class Program
-    {
-        /// <summary>
-        /// Главная точка входа для приложения.
-        /// </summary>
-        [STAThread]
-        static void Main()
-        {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
-        }
-    }
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
 }
+
+app.MapGet("/person/{pin}", (string pin, PersonService service) =>
+{
+    var person = service.GetByPin(pin);
+    if (person == null)
+        return Results.NotFound(new { message = "Человек не найден" });
+    return Results.Ok(person);
+});
+
+app.MapGet("/persons", (PersonService service) =>
+{
+    return Results.Ok(service.GetAll());
+});
+// Добавить человека
+app.MapPost("/person", (Person person, PersonService service) =>
+{
+    service.Add(person);
+    return Results.Ok(person);
+});
+
+// Удалить человека
+app.MapDelete("/person/{pin}", (string pin, PersonService service) =>
+{
+    var result = service.Delete(pin);
+    if (!result) return Results.NotFound();
+    return Results.Ok();
+});
+
+
+
+
+app.Run();
